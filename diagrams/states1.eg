@@ -1,0 +1,15 @@
+graph { flow: down; root: N0 }
+
+[N0] {label: Reboot; border: double}
+[N1] {label: Drop}
+[N2] {label: N_L=N, N_R=0,\nS_R=S_L=0 }
+[N3] {label: Init, Init; border: double}
+
+##################################
+[N0 ] -> [ N2 ] 
+[N0 ] -- recv any --> [ N1 ]
+[N1 ] -> [ N0 ]
+[N2 ] -> [N3]
+[N3 ] -- recv (RST M) --> [To X2]{border: dotted}
+[N3 ] --> [To X1]{border: dotted}
+

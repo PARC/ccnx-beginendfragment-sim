@@ -1,0 +1,36 @@
+graph { flow: down; root: N19 }
+
+[N19]{label: Send\nRST(N_L)}
+[N20]{label: Start Timer}
+[N21]{label: Sync, Init; border: double}
+[N22]{label: N_R=M}
+[N23]{label: Inc. Timeout}
+[N24]{label: If N=N_L}
+[N25]{label: Cancel Timer\nReset Timeout}
+#[N26]{label: OK, Init; border: double}
+[N27]{label: Drop}
+[N28]{label: N_R=M}
+[N29]{label: Send\nRSTACK(N_R, N_L)}
+[N30]{label: OK, OK; border: double}
+[N32]{label: If M=N_R}
+
+##################################
+[X1]{border: dotted} --> [N19]
+[N19] --> [N20]
+[N20] --> [N21]
+[N21] -- timeout --> [N23]
+[N21] -- recv(RST M) --> [N22]
+[N21] -- recv(RSTACK N,M) --> [N24]
+[N22] --> [To X4]{border: dotted}
+[N23] --> [N19]
+[N24] -- no --> [N27]
+[N24] -- yes --> [N25]
+[N25] --> [N28]
+[N28] --> [N29]
+[N29] --> [N30]
+[X5]{border: dotted} --> [N30]
+[N30] -- recv RSTACK(N, M) --> [To X6]{border: dotted}
+[N30] -- recv RST(M) --> [N32]
+[N32] -- yes --> [N29]
+[N32] -- no --> [To X3]{border: dotted}
+

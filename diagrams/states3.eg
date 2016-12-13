@@ -1,0 +1,41 @@
+graph { flow: down; root: N4 }
+
+[N4] {label: N_R=M}
+[N5] {label: Send\nRSTAK(N_R, N_L)}
+[N6] {label: Init, OK; border: double}
+[N7] {label: Send RST(N_L)}
+[N8] {label: Start Timer}
+[N9] {label: Sync, OK; border: double}
+[N10]{label: Inc. Timeout}
+[N11]{label: If N=N_L}
+[N12]{label: Cancel Timer\nResetTimeout}
+[N13]{label: Drop}
+[N14]{label: If M=M_REMOTE}
+[N15]{label: Send\nRSTAK(N_R, N_L)}
+[N16]{label: If M=M_REMOTE}
+[N17]{label: Cancel Timer}
+[N18]{label: N_R=M,\nS_R=S_L=0}
+
+##################################
+[X2]{border: dotted} --> [N4]
+[N4 ] --> [N5]
+[N5 ] --> [N6]
+[N6 ] -- recv (RST M) --> [N4]
+[N6 ] --> [N7] --> [N8] --> [N9]
+[N9 ] -- timeout --> [N10] --> [N7]
+[N9 ] -- recv (RST M) --> [N16]
+[N9 ] -- recv (RSTAK N,M) --> [N11]
+[X6]{border: dotted} --> [N11]
+[N11] -- yes --> [N12]
+[N11] -- no --> [N13]
+[N12] --> [N14]
+[N14] -- no --> [N18]
+[N14] -- yes --> [To X5]{border: dotted}
+[X4]{border: dotted} --> [N15]
+[N15] --> [N9]
+[N16] -- yes --> [N15]
+[N16] -- no --> [N17]
+[N17] --> [N18]
+[X3]{border: dotted} --> [N18]
+[N18] --> [N5]
+
